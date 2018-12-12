@@ -14,19 +14,24 @@ class RegularProduct
   extend VerifiableView
 
   definition do
-    Product.not_deprecated.where(..)
+    Product.
+      not_deprecated.
+      where(Product.arel_table[:price].gt(150)).
+      select(:id, :name, :price)
   end
 end
 ```
 
 Then in your tests you'll have a
 ```rb
-RegularProduct.verify
+test "regular_products view is up-to-date" do
+  RegularProduct.verify
+end
 ```
 
 That will check that you have a `regular_products` view defined in your database
 and that the query matches with your definition (Products that are not
-deprecated, etc)
+deprecated, with prices superior to 150, etc)
 
 ## Why
 
